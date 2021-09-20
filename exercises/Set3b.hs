@@ -98,10 +98,9 @@ indexDefault (x:xs) i def = indexDefault xs (i-1) def
 -- Use pattern matching and recursion to iterate through the list.
 
 sorted :: [Int] -> Bool
-sorted [] = True
-sorted (x:[]) = True
-sorted (x:xs) = x <= head' xs && sorted xs
-    where head' (x:xs) = x
+sorted []       = True
+sorted (x:[])   = True
+sorted (x:y:xs) = x <= y && sorted (y:xs)
 
 ------------------------------------------------------------------------------
 -- Ex 6: compute the partial sums of the given list like this:
@@ -152,7 +151,6 @@ merge (x:xs) (y:ys)
 
 mymaximum :: (a -> a -> Bool) -> a -> [a] -> a
 mymaximum bigger initial [] = initial
-mymaximum bigger initial (x:[]) = if x `bigger` initial then x else initial
 mymaximum bigger initial (x:xs) = if x `bigger` initial
                                   then mymaximum bigger x xs
                                   else mymaximum bigger initial xs
