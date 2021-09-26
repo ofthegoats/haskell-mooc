@@ -2,7 +2,7 @@
 
 module Set6 where
 
-import           Data.Char (toLower)
+import           Data.Char                      ( toLower )
 import           Mooc.Todo
 
 ------------------------------------------------------------------------------
@@ -13,10 +13,10 @@ data Country = Finland | Switzerland | Norway
   deriving Show
 
 instance Eq Country where
-  Finland == Finland         = True
+  Finland     == Finland     = True
   Switzerland == Switzerland = True
-  Norway == Norway           = True
-  _ == _                     = False
+  Norway      == Norway      = True
+  _           == _           = False
 
 ------------------------------------------------------------------------------
 -- Ex 2: implement an Ord instance for Country so that
@@ -25,12 +25,11 @@ instance Eq Country where
 -- Remember minimal complete definitions!
 
 instance Ord Country where
-  compare x y
-    | x == y = EQ
-    | x == Finland && y == Norway = LT
-    | x == Finland && y == Switzerland = LT
-    | x == Norway && y == Switzerland = LT
-    | otherwise = GT
+  compare x y | x == y                           = EQ
+              | x == Finland && y == Norway      = LT
+              | x == Finland && y == Switzerland = LT
+              | x == Norway && y == Switzerland  = LT
+              | otherwise                        = GT
 
 ------------------------------------------------------------------------------
 -- Ex 3: Implement an Eq instance for the type Name which contains a String.
@@ -46,9 +45,10 @@ data Name = Name String
   deriving Show
 
 instance Eq Name where
-  (Name []) == (Name [])         = True
-  (Name (x:xs)) == (Name (y:ys)) = toLower x == toLower y && Name xs == Name ys
-  (Name _) == (Name _)           = False
+  (Name []) == (Name []) = True
+  (Name (x : xs)) == (Name (y : ys)) =
+    toLower x == toLower y && Name xs == Name ys
+  (Name _) == (Name _) = False
 
 ------------------------------------------------------------------------------
 -- Ex 4: here is a list type parameterized over the type it contains.
@@ -62,9 +62,9 @@ data List a = Empty | LNode a (List a)
   deriving Show
 
 instance Eq a => Eq (List a) where
-  Empty == Empty               = True
+  Empty        == Empty        = True
   (LNode x xs) == (LNode y ys) = x == y && xs == ys
-  _ == _                       = False
+  _            == _            = False
 
 ------------------------------------------------------------------------------
 -- Ex 5: below you'll find two datatypes, Egg and Milk. Implement a
@@ -107,8 +107,8 @@ instance (Price a) => Price (Maybe a) where
   price (Just x) = price x
 
 instance (Price a) => Price [a] where
-  price []     = 0
-  price (x:xs) = price x + price xs
+  price []       = 0
+  price (x : xs) = price x + price xs
 
 ------------------------------------------------------------------------------
 -- Ex 7: below you'll find the datatype Number, which is either an
@@ -121,8 +121,8 @@ data Number = Finite Integer | Infinite
   deriving (Show,Eq)
 
 instance Ord Number where
-  _ <= Infinite            = True
-  Infinite <= _            = False
+  _          <= Infinite   = True
+  Infinite   <= _          = False
   (Finite a) <= (Finite b) = a <= b
 
 ------------------------------------------------------------------------------
@@ -169,9 +169,11 @@ instance Eq RationalNumber where
 -- Hint: Remember the function gcd?
 
 simplify :: RationalNumber -> RationalNumber
-simplify (RationalNumber a b) = let g = gcd a b in
-  if g == 1 then RationalNumber a b
-  else RationalNumber (a `div` g) (b `div` g)
+simplify (RationalNumber a b) =
+  let g = gcd a b
+  in  if g == 1
+        then RationalNumber a b
+        else RationalNumber (a `div` g) (b `div` g)
 
 ------------------------------------------------------------------------------
 -- Ex 10: implement the typeclass Num for RationalNumber. The results
@@ -192,18 +194,18 @@ simplify (RationalNumber a b) = let g = gcd a b in
 --   signum (RationalNumber 0 2)             ==> RationalNumber 0 1
 
 instance Num RationalNumber where
-  (RationalNumber a b) + (RationalNumber c d) = simplify $ RationalNumber (a*d + b*c) (b*d)
-  (RationalNumber a b) * (RationalNumber c d) = simplify $ RationalNumber (a*c) (b*d)
-  abs (RationalNumber a b)
-    | a < 0 && b < 0 = RationalNumber (-a) (-b)
-    | a < 0 = RationalNumber (-a) b
-    | b < 0 = RationalNumber a (-b)
-    | otherwise = RationalNumber a b
-  signum (RationalNumber a b)
-    | a == 0 = 0
-    | a < 0 && b < 0 = 1
-    | a < 0 || b < 0 = -1
-    | otherwise = 1
+  (RationalNumber a b) + (RationalNumber c d) =
+    simplify $ RationalNumber (a * d + b * c) (b * d)
+  (RationalNumber a b) * (RationalNumber c d) =
+    simplify $ RationalNumber (a * c) (b * d)
+  abs (RationalNumber a b) | a < 0 && b < 0 = RationalNumber (-a) (-b)
+                           | a < 0          = RationalNumber (-a) b
+                           | b < 0          = RationalNumber a (-b)
+                           | otherwise      = RationalNumber a b
+  signum (RationalNumber a b) | a == 0         = 0
+                              | a < 0 && b < 0 = 1
+                              | a < 0 || b < 0 = -1
+                              | otherwise      = 1
   fromInteger x = RationalNumber x 1
   negate (RationalNumber a b) = RationalNumber (-a) b
 
@@ -269,12 +271,12 @@ class Cycle a where
   stepMany count current = stepMany (count - 1) (step current)
 
 instance Cycle Color where
-  step Red = Green
+  step Red   = Green
   step Green = Blue
-  step Blue = Red
+  step Blue  = Red
 
 instance Cycle Suit where
-  step Club = Spade
-  step Spade = Diamond
+  step Club    = Spade
+  step Spade   = Diamond
   step Diamond = Heart
-  step Heart = Club
+  step Heart   = Club
