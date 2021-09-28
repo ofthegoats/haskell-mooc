@@ -149,7 +149,7 @@ sameDiag :: Coord -> Coord -> Bool
 sameDiag (i, j) (k, l) = (i - k) ^ 2 == (j - l) ^ 2
 
 sameAntidiag :: Coord -> Coord -> Bool
-sameAntidiag (i, j) (k, l) = (i - k) ^ 2 == (j - l) ^ 2
+sameAntidiag = sameDiag
 
 --------------------------------------------------------------------------------
 -- Ex 4: In chess, a queen may capture another piece in the same row, column,
