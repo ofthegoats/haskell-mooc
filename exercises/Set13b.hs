@@ -383,4 +383,6 @@ instance Monad SL where
 --  4
 
 mkCounter :: IO (IO (), IO Int)
-mkCounter = todo
+mkCounter = do
+  counter <- newIORef 0
+  return (modifyIORef counter (+ 1), readIORef counter)
