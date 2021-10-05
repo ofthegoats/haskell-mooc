@@ -332,7 +332,13 @@ modifySL f = SL (\s -> ((), f s, []))
 
 instance Functor SL where
   -- implement fmap
-  fmap f sl = todo
+  fmap f state0 =
+    SL
+      ( \s ->
+          let (curr, _, logs) = runSL state0 s
+              res = f curr
+           in (res, s, logs)
+      )
 
 -- This is an Applicative instance that works for any monad, you
 -- can just ignore it for now. We'll get back to Applicative later.
@@ -342,8 +348,14 @@ instance Applicative SL where
 
 instance Monad SL where
   -- implement return and >>=
-  return = todo
-  (>>=) = todo
+  return x = SL (\i -> (x, i, []))
+  from >>= f =
+    SL
+      ( \s ->
+          let (val, state, logs) = runSL from s
+              (val', state', logs') = runSL (f val) state
+           in (val', state', logs ++ logs')
+      )
 
 ------------------------------------------------------------------------------
 -- Ex 9: Implement the operation mkCounter that produces the IO operations
