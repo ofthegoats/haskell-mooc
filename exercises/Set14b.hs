@@ -158,12 +158,14 @@ Nothing ?> _ = Nothing
 Just a ?> f = f a
 
 parseCommand :: [T.Text] -> Maybe Command
-parseCommand [] = Nothing
-parseCommand path
-  | head path == T.pack "balance" && length path == 2 = Just (Balance (path !! 1))
-  | head path == T.pack "deposit" && length path == 3 = parseInt (path !! 2) ?> \x -> Just (Deposit (path !! 1) x)
-  | head path == T.pack "withdraw" && length path == 3 = parseInt (path !! 2) ?> \x -> Just (Withdraw (path !! 1) x)
+parseCommand [command, account]
+  | command == T.pack "balance" = Just $ Balance account
   | otherwise = Nothing
+parseCommand [command, account, amount]
+  | command == T.pack "deposit" = parseInt amount ?> \x -> Just (Deposit account x)
+  | command == T.pack "withdraw" = parseInt amount ?> \x -> Just (Withdraw account x)
+  | otherwise = Nothing
+parseCommand _ = Nothing
 
 ------------------------------------------------------------------------------
 -- Ex 4: Running commands. Implement the IO operation perform that takes a
